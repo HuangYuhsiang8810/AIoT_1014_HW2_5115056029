@@ -285,7 +285,12 @@ GPT 協助範圍包含：
 - 建立模型評估、研究圖表、預測區間與互動網站。
 - Debug、驗證輸出一致性與更新文件。
 
-提交報告時仍應附上依課程規定匯出的完整 GPT 對話 PDF。
+完整對話與繳交附件：
+
+- [ChatGPT 分享頁：HW2 回歸作業規劃與實作對話](https://chatgpt.com/share/6ad1865f-b544-83e8-bfec-2fef26136d76)
+- [下載完整 GPT 對話 PDF（115 頁）](site-demo/dist/assets/ChatGPT-HW2-regression-planning-conversation.pdf)
+
+上述 PDF 為本次作業與 ChatGPT 商討、規劃、程式實作及除錯的完整匯出紀錄，可作為提交報告的「GPT 輔助內容」附件。模型判讀與最終報告內容仍應由作業提交者確認。
 
 ## 10. NotebookLM 摘要
 

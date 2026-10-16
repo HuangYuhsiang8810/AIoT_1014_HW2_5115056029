@@ -14,6 +14,7 @@ StudentsPerformanceDataSet.csv
 
 # Local visual QA screenshots
 site-demo/preview-*.png
+tmp/
 
 # Local secrets, if added later
 .env
