@@ -5,6 +5,8 @@
 > 資料來源：[Student Performance Prediction Machine Learning Challenge — train.csv](https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv)
 
 > **線上互動 Demo：** [開啟學生生產力分數回歸實驗室](https://huangyuhsiang8810.github.io/AIoT_1014_HW2_5115056029/)
+>
+> > **Gemini NoteBookLM：** (https://notebook.google.com/notebook/70b212bc-dd06-4649-be83-091e47b800cb)
 
 ## 1. 分析目標
 
