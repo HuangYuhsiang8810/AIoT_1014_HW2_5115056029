@@ -4,6 +4,8 @@
 
 > 資料來源：[Student Performance Prediction Machine Learning Challenge — train.csv](https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv)
 
+> **線上互動 Demo：** [開啟學生生產力分數回歸實驗室](https://huangyuhsiang8810.github.io/AIoT_1014_HW2_5115056029/)
+
 ## 1. 分析目標
 
 - 以 `productivity_score` 為連續型目標欄位。
@@ -31,7 +33,8 @@
 ```text
 AIoT_HW2/
 ├─ StudentsPerformance_train.csv        # 目前使用的 Kaggle train.csv
-├─ main.py                              # CRISP-DM 主程式
+├─ 5115056029_hw2.py                    # 作業繳交主程式（CRISP-DM 六階段）
+├─ main.py                              # 開發版本主程式（保留不變）
 ├─ requirements.txt
 ├─ README.md
 ├─ outputs/
@@ -173,13 +176,13 @@ python -m pip install -r requirements.txt
 ### 執行完整分析
 
 ```powershell
-python main.py
+python 5115056029_hw2.py
 ```
 
 或明確指定資料與輸出位置：
 
 ```powershell
-python main.py --data-file StudentsPerformance_train.csv --output-dir outputs
+python 5115056029_hw2.py --data-file StudentsPerformance_train.csv --output-dir outputs
 ```
 
 ### 重建網站模型實驗資料
@@ -188,13 +191,21 @@ python main.py --data-file StudentsPerformance_train.csv --output-dir outputs
 python site-demo\generate_experiments.py
 ```
 
-### 啟動網站
+### 線上網站 Demo
+
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-54e7d4?logo=github)](https://huangyuhsiang8810.github.io/AIoT_1014_HW2_5115056029/)
+
+正式網址：<https://huangyuhsiang8810.github.io/AIoT_1014_HW2_5115056029/>
+
+網站支援研究導讀、模型比較、Feature Selection 實驗、模型診斷、即時預測，以及使用者自行上傳 CSV 執行瀏覽器端線性回歸。
+
+### 本機啟動網站
 
 ```powershell
 python -m http.server 4173 --directory site-demo\dist
 ```
 
-開啟：<http://localhost:4173>
+本機開啟：<http://localhost:4173>
 
 ### 網頁自訂 CSV 回歸
 
