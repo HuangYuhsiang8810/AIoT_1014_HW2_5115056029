@@ -1,0 +1,31 @@
+{
+  "target": "productivity_score",
+  "raw_features": [
+    "age",
+    "gender",
+    "study_hours_per_day",
+    "sleep_hours",
+    "phone_usage_hours",
+    "social_media_hours",
+    "youtube_hours",
+    "gaming_hours",
+    "breaks_per_day",
+    "coffee_intake_mg",
+    "exercise_minutes",
+    "assignments_completed",
+    "attendance_percentage",
+    "stress_level",
+    "focus_score",
+    "final_grade"
+  ],
+  "excluded_identifier_columns": [
+    "id",
+    "student_id"
+  ],
+  "raw_feature_count": 16,
+  "transformed_feature_count": 17,
+  "selected_feature_count": 12,
+  "data_source": "https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv",
+  "task_scope": "HW2 regression task predicting the official productivity_score target from the supplied competition train CSV.",
+  "limitation": "Results are predictive associations, not causal effects; competition test labels are unavailable for independent final evaluation."
+}

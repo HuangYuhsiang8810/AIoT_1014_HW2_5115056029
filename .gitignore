@@ -1,0 +1,22 @@
+# Local Python environment and generated caches
+.venv/
+__pycache__/
+*.py[cod]
+
+# Editor and operating-system metadata
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Superseded datasets retained only as local backup
+archive-old-test-dataset/
+StudentsPerformanceDataSet.csv
+
+# Local visual QA screenshots
+site-demo/preview-*.png
+
+# Local secrets, if added later
+.env
+.env.*
+*.pem
+*.key

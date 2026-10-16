@@ -1,0 +1,4 @@
+project-includes = ["**/*.py"]
+project-excludes = [".venv/**", "outputs/**", "**/__pycache__/**"]
+python-interpreter-path = ".venv/Scripts/python.exe"
+python-version = "3.12"

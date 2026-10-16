@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="以 StudentsPerformance_train.csv 建立的學生 productivity_score 多元線性回歸互動分析。">
+  <title>學生生產力分數回歸實驗室</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tech-theme.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="回到頁首"><span class="brand-mark" aria-hidden="true">β</span><span><strong>生產力分數回歸實驗室</strong><small>CRISP-DM · HW2</small></span></a>
+      <nav class="top-nav" aria-label="主要導覽"><a href="#overview">模型表現</a><a href="#data-story">資料理解</a><a href="#custom-analysis">上傳 CSV</a><a href="#model-lab">模型實驗室</a><a href="#diagnostics">模型診斷</a><a href="#predictor">即時預測</a></nav>
+      <button class="header-guide" id="start-guide" type="button"><span aria-hidden="true">◎</span> 開始導讀</button>
+      <a class="header-cta" href="assets/StudentsPerformance_train.csv" download>下載資料集 <span>↓</span></a>
+    </div>
+  </header>
+
+  <aside class="guide-panel" id="guide-panel" aria-labelledby="guide-title" aria-live="polite">
+    <div class="guide-progress" aria-hidden="true"><i id="guide-progress-fill"></i></div>
+    <div class="guide-panel-head"><span id="guide-step-label">導讀 1 / 8</span><button class="guide-close" id="guide-close" type="button" aria-label="關閉導讀">×</button></div>
+    <h2 id="guide-title">先看清楚官方預測目標</h2>
+    <p id="guide-copy">本作業使用 competition train.csv 的 16 個非識別欄位，預測官方目標 productivity_score。</p>
+    <p class="guide-tip" id="guide-tip"><strong>這一步請看：</strong><span>id 與 student_id 僅用來識別資料列，不會進入模型。</span></p>
+    <div class="guide-actions"><button class="guide-button secondary" id="guide-prev" type="button">← 上一步</button><button class="guide-button primary" id="guide-next" type="button">下一步：模型結果 →</button></div>
+  </aside>
+
+  <main id="top">
+    <section class="hero shell" aria-labelledby="hero-title" data-tour-id="intro">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span></span> AIoT × CRISP-DM × Regression</p>
+        <h1 id="hero-title">從學生行為資料，<br><em>重建生產力分數。</em></h1>
+        <p class="hero-lead">使用 16,000 筆 competition train.csv 資料預測官方 productivity_score。完整執行資料理解、特徵選擇、多元線性回歸、交叉驗證與預測區間。</p>
+        <div class="hero-actions"><a class="button button-primary" href="#model-lab">開始模型實驗 <span>↗</span></a><a class="button button-ghost" href="#method">查看 CRISP-DM 流程</a></div>
+      </div>
+      <div class="hero-visual reveal" aria-label="模型摘要">
+        <div class="hero-grid"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="floating-card floating-card-main"><p>Selected Linear</p><strong>1.000<small> R²</small></strong><div class="mini-progress"><i style="width:100%"></i></div><small>模型準確重建官方目標</small></div>
+        <div class="floating-card floating-card-top"><span class="status-dot"></span><div><strong>Linear model 勝出</strong><small>RMSE 約 0.0029</small></div></div>
+        <div class="floating-card floating-card-bottom"><span class="spark">±</span><div><small>95% 預測區間半寬</small><strong>0.0047 分</strong></div></div>
+      </div>
+    </section>
+
+    <section class="stat-ribbon" aria-label="資料集摘要"><div class="shell stat-ribbon-inner"><div><strong>16,000</strong><span>筆資料</span></div><div><strong>16</strong><span>個原始 predictors</span></div><div><strong>17</strong><span>個模型候選特徵</span></div><div><strong>12</strong><span>SelectKBest 入選</span></div></div></section>
+
+    <nav class="journey-nav" aria-label="分析導讀路徑"><div class="shell journey-inner"><div class="journey-title"><span>GUIDED TOUR</span><strong>跟著 8 個步驟讀懂分析</strong></div><div class="journey-steps"><button class="active" type="button" data-tour-jump="0"><span>01</span>研究問題</button><button type="button" data-tour-jump="1"><span>02</span>模型結果</button><button type="button" data-tour-jump="2"><span>03</span>認識資料</button><button type="button" data-tour-jump="3"><span>04</span>選擇特徵</button><button type="button" data-tour-jump="4"><span>05</span>實驗模型</button><button type="button" data-tour-jump="5"><span>06</span>檢查誤差</button><button type="button" data-tour-jump="6"><span>07</span>動手預測</button><button type="button" data-tour-jump="7"><span>08</span>完整流程</button></div></div></nav>
+
+    <section class="section shell" id="overview" data-tour-id="models">
+      <div class="section-heading reveal"><div><p class="eyebrow"><span></span> Model overview</p><h2>線性回歸遠優於平均值基準</h2></div><p>所有模型使用相同 80/20 切分。Selected Linear 的 R² 幾乎為 1，表示目標高度接近可被特徵重建的線性公式。</p></div>
+      <div class="config-bar reveal"><div class="config-title"><span>⚙</span><div><strong>固定實驗設定</strong><small>Random state = 42 · 12,800 train / 3,200 validation</small></div></div><div class="config-tags"><span>Median imputation</span><span>StandardScaler</span><span>One-Hot Encoding</span><span>SelectKBest k=12</span></div></div>
+      <div class="model-grid">
+        <article class="model-card reveal"><div class="model-card-top"><span class="model-index">01</span><span class="badge neutral">Baseline</span></div><h3>Dummy Baseline</h3><p>所有學生都預測為訓練集平均值，用來判斷模型是否真正提供預測價值。</p><dl><div><dt>RMSE</dt><dd>16.2398</dd></div><div><dt>R²</dt><dd>−0.0034</dd></div></dl></article>
+        <article class="model-card reveal"><div class="model-card-top"><span class="model-index">02</span><span class="badge neutral">Full</span></div><h3>完整多元線性回歸</h3><p>使用 One-Hot 後全部 17 個候選特徵，幾乎完整重建 productivity_score。</p><dl><div><dt>RMSE</dt><dd>0.0029</dd></div><div><dt>R²</dt><dd>1.0000</dd></div></dl></article>
+        <article class="model-card featured reveal"><div class="model-card-top"><span class="model-index">03</span><span class="badge best">Best holdout</span></div><h3>特徵選擇線性回歸</h3><p>SelectKBest 保留 12 個特徵，維持近乎完美表現並完成 Feature Selection。</p><dl><div><dt>RMSE</dt><dd>0.0029</dd></div><div><dt>R²</dt><dd>1.0000</dd></div></dl></article>
+      </div>
+      <div class="cv-strip reveal"><div><span>5-fold CV RMSE</span><strong>0.0029 <small>± 0.0000</small></strong></div><div class="cv-line"><i style="width:100%"></i></div><p>Selected Linear 的 CV R² 幾乎為 1。五個資料切分都得到一致結果，顯示關係穩定且高度線性。</p></div>
+    </section>
+
+    <section class="section section-tinted" id="data-story" data-tour-id="data">
+      <div class="shell">
+        <div class="section-heading reveal"><div><p class="eyebrow"><span></span> Data understanding</p><h2>目標近似對稱，特徵訊號清楚</h2></div><p>以下圖表由 16,000 筆 train.csv 重新計算。Pearson r 衡量線性關係，不代表因果，但可協助辨識適合線性回歸的訊號。</p></div>
+        <div class="research-stats reveal" aria-label="資料理解重點"><div><span>平均數</span><strong>50.15</strong></div><div><span>中位數</span><strong>50.22</strong></div><div><span>最大 |Pearson r|</span><strong>0.7323</strong></div></div>
+        <div class="chart-grid chart-grid-two research-charts">
+          <figure class="chart-card reveal"><div class="chart-copy"><span>01</span><div><h3>productivity_score 分布</h3><p>平均數 50.15、中位數 50.22，偏度約 −0.018。目標近似對稱，沒有明顯長尾問題。</p></div></div><a class="chart-image-link" href="assets/01_productivity_score_distribution.png" target="_blank" rel="noopener"><img src="assets/01_productivity_score_distribution.png" alt="productivity_score 分布直方圖，標示平均數 50.15 與中位數 50.22" loading="lazy"></a><a class="chart-download" href="assets/01_productivity_score_distribution.png" download>下載高解析 PNG ↓</a></figure>
+          <figure class="chart-card reveal"><div class="chart-copy"><span>02</span><div><h3>與目標值的 Pearson r</h3><p>study_hours_per_day 達 0.7323；focus、sleep 為正向訊號，phone usage 與 stress 為負向訊號。</p></div></div><a class="chart-image-link" href="assets/02_feature_correlations.png" target="_blank" rel="noopener"><img src="assets/02_feature_correlations.png" alt="15 個數值特徵與 productivity_score 的 Pearson 相關係數長條圖" loading="lazy"></a><a class="chart-download" href="assets/02_feature_correlations.png" download>下載高解析 PNG ↓</a></figure>
+          <figure class="chart-card chart-card-full reveal" id="pearson-heatmap"><div class="chart-copy"><span>03</span><div><h3>您的 Pearson 相關矩陣</h3><p>第一列與第一欄就是 Target：productivity_score。紅色代表正相關、藍色代表負相關；六個主要訊號清楚可見，predictors 彼此的最高 |r| 約 0.020。</p></div></div><a class="chart-image-link" href="assets/02a_pearson_correlation_heatmap.png" target="_blank" rel="noopener"><img src="assets/02a_pearson_correlation_heatmap.png" alt="以 productivity_score 為第一列與第一欄的深色 Pearson 相關矩陣熱圖" loading="lazy"></a><div class="chart-downloads"><a class="chart-download" href="assets/02a_pearson_correlation_heatmap.png" download>下載高解析 PNG ↓</a><a class="chart-download" href="assets/pearson_correlation_matrix.csv" download>下載相關矩陣 CSV ↓</a></div></figure>
+        </div>
+        <div class="correlation-detail reveal">
+          <div><p class="eyebrow"><span></span> Target correlation ranking</p><h3>與 productivity_score 最接近的數值特徵</h3><p>前六項呈現明確線性訊號，方向也符合資料中的生成關係；其餘欄位接近零。</p></div>
+          <div class="correlation-table-wrap"><table class="correlation-table"><thead><tr><th>特徵</th><th>Pearson r</th><th>判讀</th></tr></thead><tbody><tr><td>study_hours_per_day</td><td>+0.7323</td><td>強正相關</td></tr><tr><td>focus_score</td><td>+0.4151</td><td>中度正相關</td></tr><tr><td>sleep_hours</td><td>+0.3386</td><td>中度正相關</td></tr><tr><td>phone_usage_hours</td><td>−0.3269</td><td>中度負相關</td></tr><tr><td>stress_level</td><td>−0.1956</td><td>弱負相關</td></tr><tr><td>attendance_percentage</td><td>+0.1748</td><td>弱正相關</td></tr><tr><td>coffee_intake_mg</td><td>+0.0196</td><td>近乎無相關</td></tr><tr><td>breaks_per_day</td><td>−0.0070</td><td>近乎無相關</td></tr></tbody></table></div>
+        </div>
+        <div class="research-notes"><article class="insight-card reveal"><span>主要正向訊號</span><strong>讀書、專注、睡眠</strong><p>這三個欄位與目標呈正相關，其中讀書時數的單變量線性關係最強。</p></article><article class="insight-card reveal"><span>主要負向訊號</span><strong>手機使用與壓力</strong><p>兩者和 productivity_score 呈負相關；方向是預測關係，不應直接解讀為因果。</p></article><article class="insight-card caution reveal"><span>研究限制</span><strong>近乎公式型資料</strong><p>R² 幾乎為 1，顯示目標高度接近線性生成公式；外部真實資料仍可能有較大誤差。</p></article></div>
+      </div>
+    </section>
+
+    <section class="section custom-analysis-section" id="custom-analysis">
+      <div class="shell">
+        <div class="section-heading reveal"><div><p class="eyebrow"><span></span> Bring your own data</p><h2>上傳 CSV，建立你的線性回歸</h2></div><p>預設仍顯示本站 StudentsPerformance_train.csv 的研究成果。只有按下「開始回歸分析」後，下方才會產生你自己的 holdout 評估與診斷。</p></div>
+        <div class="custom-mode-bar reveal"><div><i aria-hidden="true"></i><span>目前資料模式</span><strong id="custom-mode-label">預設資料集 · StudentsPerformance_train.csv</strong></div><button id="custom-reset" type="button" disabled>恢復預設模式</button></div>
+        <div class="custom-analysis-shell reveal">
+          <aside class="upload-panel">
+            <div class="upload-steps" aria-label="自訂資料操作步驟"><span class="active">01 上傳</span><span>02 設定</span><span>03 訓練</span><span>04 閱讀診斷</span></div>
+            <label class="drop-zone" id="csv-drop-zone" for="csv-file-input" tabindex="0">
+              <input id="csv-file-input" type="file" accept=".csv,text/csv" hidden>
+              <span class="upload-icon" aria-hidden="true">⇧</span>
+              <strong>拖放 CSV 到這裡</strong>
+              <small>或點擊選擇檔案 · 上限 50 MB</small>
+              <b>瀏覽檔案</b>
+            </label>
+            <div class="upload-privacy"><span aria-hidden="true">◎</span><p><strong>只在你的瀏覽器處理</strong><small>檔案不會離開裝置，也不會覆蓋網站原始資料。</small></p></div>
+            <div class="current-file-card" id="current-file-card"><span>目前資料</span><strong id="current-file-name">StudentsPerformance_train.csv</strong><small id="current-file-meta">預設分析 · 16,000 筆 × 19 欄</small></div>
+          </aside>
+
+          <div class="custom-workspace">
+            <div class="custom-empty" id="custom-empty"><span>CSV</span><h3>先載入一份含數值目標的資料</h3><p>第一列需為欄位名稱。上傳後可以選擇 Target 與要投入模型的 Features。</p><ul><li>數值特徵：中位數補值與標準化</li><li>類別特徵：One-Hot Encoding</li><li>評估方式：80% 訓練、20% 測試</li></ul></div>
+            <form class="custom-config hidden" id="custom-config">
+              <div class="custom-data-summary"><div><span>資料列</span><strong id="custom-row-count">—</strong></div><div><span>欄位數</span><strong id="custom-column-count">—</strong></div><div><span>缺失格</span><strong id="custom-missing-count">—</strong></div><div><span>可用特徵</span><strong id="custom-usable-count">—</strong></div></div>
+              <div class="custom-setting-grid">
+                <label><span>① 選擇預測目標 Target</span><select id="custom-target" required></select><small>Target 必須大多數為數值。</small></label>
+                <label><span>② 測試資料比例</span><select id="custom-test-size"><option value="0.2">20%（建議）</option><option value="0.25">25%</option><option value="0.3">30%</option></select><small>固定亂數種子，重跑結果一致。</small></label>
+              </div>
+              <fieldset class="custom-features"><legend><span>③ 選擇 Features</span><small id="custom-feature-count">已選 0 個</small></legend><div class="feature-actions"><button type="button" id="select-all-features">全選可用欄位</button><button type="button" id="clear-all-features">清除</button></div><div class="custom-feature-list" id="custom-feature-list"></div></fieldset>
+              <div class="custom-run-row"><p id="custom-status" role="status" aria-live="polite">尚未執行自訂分析。</p><button class="button button-primary" id="run-custom-regression" type="submit">開始回歸分析 <span>↗</span></button></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="custom-results hidden" id="custom-results" aria-live="polite">
+          <div class="custom-results-head"><div><p class="eyebrow"><span></span> Your regression result</p><h3 id="custom-result-title">自訂資料回歸結果</h3></div><span class="custom-success"><i></i> CLIENT-SIDE MODEL</span></div>
+          <div class="custom-metrics"><article><span>MAE</span><strong id="custom-mae">—</strong><small>平均絕對誤差</small></article><article><span>RMSE</span><strong id="custom-rmse">—</strong><small>越低越好</small></article><article class="primary"><span>R²</span><strong id="custom-r2">—</strong><small>越接近 1 越好</small></article><article><span>Encoded features</span><strong id="custom-encoded-count">—</strong><small>One-Hot 後欄位數</small></article></div>
+          <div class="custom-diagnostic-grid"><figure><figcaption><strong>實際值 vs. 預測值</strong><span>測試集與理想 45° 線</span></figcaption><canvas id="custom-prediction-chart" width="760" height="430" aria-label="自訂資料實際值與預測值散佈圖"></canvas></figure><div class="custom-coefficients"><div><strong>影響力較大的係數</strong><span>數值欄標準化後，依係數絕對值排序</span></div><ol id="custom-coefficient-list"></ol><p id="custom-result-note"></p></div></div>
+          <div class="custom-preview"><h4>資料預覽</h4><div class="custom-preview-scroll"><table id="custom-preview-table"></table></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="features" data-tour-id="features"><div class="section-heading reveal"><div><p class="eyebrow"><span></span> Feature selection</p><h2>從 17 個模型特徵選出 12 個</h2></div><p>15 個數值欄位加上 gender 的 2 個 dummy variables。SelectKBest 明確找出六個核心特徵。</p></div><div class="insight-layout"><figure class="chart-card chart-card-wide reveal"><img src="assets/03_feature_selection_scores.png" alt="特徵選擇 F-score 圖" loading="lazy"></figure><div class="insight-stack"><article class="insight-card reveal"><span>最高排名</span><strong>Study hours per day</strong><p>F-score 約 14,585，遠高於其餘欄位，是 productivity_score 最主要的單變量線性訊號。</p></article><article class="insight-card reveal"><span>識別欄處理</span><strong>ID 已排除</strong><p>id 與 student_id 僅用於辨識資料列，不進入模型，避免流水號造成假訊號。</p></article><article class="insight-card caution reveal"><span>核心發現</span><strong>前六項已接近完整公式</strong><p>讀書、專注、睡眠、手機、壓力與出席率加入後，R² 已接近 1。</p></article></div></div></section>
+
+    <section class="section lab-section" id="model-lab" data-tour-id="lab"><div class="shell"><div class="section-heading reveal"><div><p class="eyebrow"><span></span> Model playground</p><h2>親自驗證：特徵加入後誤差如何下降</h2></div><p>255 組結果全部由目前 train.csv 實際訓練。切換方法、k 與回歸器，比較特徵組合對預測表現的影響。</p></div><div class="lab-shell reveal" id="lab-shell">
+      <aside class="lab-controls" aria-label="模型實驗設定"><fieldset><legend>◈ 特徵選擇方法</legend><div class="method-options" id="method-options"><label><input type="radio" name="feature-method" value="kbest" checked><span><b>✦</b> SelectKBest<small>F-regression 排序</small></span></label><label><input type="radio" name="feature-method" value="rfe"><span><b>◇</b> RFE<small>遞迴移除特徵</small></span></label><label><input type="radio" name="feature-method" value="sfs"><span><b>↗</b> Forward SFS<small>訓練集 3-fold CV</small></span></label><label><input type="radio" name="feature-method" value="lasso"><span><b>⌁</b> Lasso ranking<small>L1 係數排序</small></span></label><label><input type="radio" name="feature-method" value="permutation"><span><b>◎</b> Permutation<small>打亂後 RMSE 劣化</small></span></label></div></fieldset>
+      <div class="feature-rule-card"><span>資料規格檢查</span><strong>16 個原始 predictors</strong><p>符合 HW2 的 10–20 個特徵要求。One-Hot 後形成 17 個模型候選特徵。</p></div>
+      <label class="k-control" for="feature-k"><span><b>◫ 選取特徵數 k</b><output id="feature-k-output">12</output></span><input id="feature-k" type="range" min="1" max="17" value="12"><small><span>1（精簡）</span><span>17（全部）</span></small></label>
+      <label class="model-control" for="regression-model"><span>⌘ 回歸模型</span><select id="regression-model"><option value="linear">◢ LinearRegression</option><option value="ridge">◈ Ridge</option><option value="lasso">⌘ Lasso</option></select></label></aside>
+      <div class="lab-results" aria-live="polite"><div class="lab-result-head"><div><span id="lab-combination">SelectKBest · k=12 · LinearRegression</span><h3>即時 Holdout 評估</h3></div><span class="real-data-badge"><i></i> REAL DATA · 12800 TRAIN / 3200 TEST</span></div><div class="lab-metrics"><article><span>MAE</span><strong id="lab-mae">—</strong><small>平均差幾分</small></article><article><span>RMSE</span><strong id="lab-rmse">—</strong><small>越低越好</small></article><article class="primary"><span>R²</span><strong id="lab-r2">—</strong><small>越接近 1 越好</small></article><article><span>有效係數</span><strong id="lab-nonzero">—</strong><small id="lab-selected-count">選取 12 個</small></article></div><div class="lab-detail-grid"><section class="selected-feature-panel"><div class="lab-panel-title"><div><span>SELECTED FEATURES</span><h3>這次模型實際用了什麼？</h3></div><strong id="feature-count-badge">12 / 17</strong></div><div class="feature-chips" id="feature-chips"><span class="loading-chip">載入實驗資料中…</span></div></section><aside class="grill-card" id="lab-grill"><span>GRILL ME · 嚴格檢查</span><h3 id="grill-title">結果近乎完美，需要合理解讀</h3><p id="grill-copy">這表示目標高度接近資料中的線性生成公式，不代表真實世界資料也會有相同表現。</p></aside></div><div class="lab-method-note"><strong id="method-note-title">SelectKBest</strong><span id="method-note-copy">正在載入方法說明…</span></div></div>
+    </div></div></section>
+
+    <section class="section section-dark" id="diagnostics" data-tour-id="diagnostics"><div class="shell"><div class="section-heading light reveal"><div><p class="eyebrow"><span></span> Model diagnostics</p><h2>預測值幾乎貼合實際值</h2></div><p>診斷圖顯示模型穩定追蹤 productivity_score，殘差與預測區間都非常小。</p></div><div class="diagnostic-shell reveal"><div class="diagnostic-tabs" role="tablist" aria-label="模型診斷圖"><button class="tab active" data-panel="actual" role="tab">實際 vs. 預測</button><button class="tab" data-panel="residual" role="tab">殘差分析</button><button class="tab" data-panel="interval" role="tab">95% 預測區間</button></div><div class="diagnostic-panel active" id="panel-actual"><img src="assets/05_actual_vs_predicted.png" alt="實際與預測 productivity_score 散佈圖"><div><strong>R² ≈ 1.0000</strong><p>資料點幾乎落在 45 度線上，表示預測值緊貼實際 productivity_score。</p></div></div><div class="diagnostic-panel" id="panel-residual"><img src="assets/06_residual_plot.png" alt="模型殘差圖"><div><strong>Residual ≈ 0</strong><p>殘差集中在零附近，沒有明顯隨預測值改變的系統性型態。</p></div></div><div class="diagnostic-panel" id="panel-interval"><img src="assets/07_prediction_intervals.png" alt="95% 預測區間圖"><div><strong>Coverage = 94.31%</strong><p>Split-conformal 半寬約 0.0047 分，覆蓋率接近設定的 95%。</p></div></div></div></div></section>
+
+    <section class="section predictor-section" id="predictor" data-tour-id="predictor"><div class="shell predictor-layout"><div class="predictor-copy reveal"><p class="eyebrow"><span></span> Live predictor</p><h2>輸入學生資料，<br>試算生產力分數。</h2><p>試算器套用模型實驗室目前的設定。調整主要特徵即可觀察 productivity_score 的線性變化。</p><div class="active-model-pill"><span>目前套用</span><strong id="active-config-label">SelectKBest · k=12 · LinearRegression</strong></div><ul><li>識別欄 id、student_id 不進入模型</li><li>參考帶為 holdout RMSE，不是 95% 預測區間</li><li>正式 conformal 區間請見模型診斷</li><li>結果僅供作業與模型展示，不能直接作教育決策</li></ul></div><div class="predictor-card reveal"><form id="score-form"><div class="form-grid dynamic-form" id="dynamic-inputs"><p>載入欄位規格中…</p></div></form><div class="prediction-result" aria-live="polite"><div><span>預測 productivity_score</span><strong id="prediction-value">—</strong></div><div class="range-result"><span id="prediction-range-label">Holdout RMSE 參考帶</span><strong id="prediction-range">—</strong></div></div><div class="score-meter"><i id="score-meter-fill"></i></div></div></div></section>
+
+    <section class="section shell" id="method" data-tour-id="workflow"><div class="section-heading reveal"><div><p class="eyebrow"><span></span> CRISP-DM workflow</p><h2>六階段完成可重現分析</h2></div><p>從官方 train.csv 定義任務、準備資料、選擇特徵，到交叉驗證與部署，所有結果皆可重新執行。</p></div><ol class="process-grid"><li class="reveal"><span>01</span><h3>Business Understanding</h3><p>預測官方 productivity_score 連續值，以 RMSE 為主要指標。</p></li><li class="reveal"><span>02</span><h3>Data Understanding</h3><p>檢查 16,000 筆、19 欄、缺失、重複、分布與相關性。</p></li><li class="reveal"><span>03</span><h3>Data Preparation</h3><p>排除兩個 ID；數值補值與標準化；gender 做 One-Hot。</p></li><li class="reveal"><span>04</span><h3>Modeling</h3><p>比較 Dummy、完整與特徵選擇 Linear、Ridge、Lasso。</p></li><li class="reveal"><span>05</span><h3>Evaluation</h3><p>使用 MAE、RMSE、R²、五折驗證、殘差與預測區間。</p></li><li class="reveal"><span>06</span><h3>Deployment</h3><p>輸出完整 Pipeline、欄位 Schema、分析檔與互動網站。</p></li></ol></section>
+
+    <section class="source-section"><div class="shell source-inner reveal"><div><p class="eyebrow"><span></span> Dataset & scope</p><h2>StudentsPerformance_train.csv</h2><p>本機檔案共有 16,000 筆、19 欄。本作業排除 id、student_id，以其餘 16 個欄位預測官方目標 productivity_score。</p><aside class="source-notice" aria-label="資料集來源提示"><span class="source-notice-icon" aria-hidden="true">i</span><div><strong>資料來源</strong><a href="https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv" target="_blank" rel="noopener">Kaggle — Student Performance Prediction<br><small>competition data / train.csv</small></a></div></aside></div><div class="source-actions"><a class="button button-primary" href="https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv" target="_blank" rel="noopener">查看 Kaggle 來源 <span>↗</span></a><a class="text-link" href="assets/StudentsPerformance_train.csv" download>下載目前 CSV ↓</a></div></div></section>
+  </main>
+
+  <footer><div class="shell"><span>AIoT HW2 · Multiple Linear Regression</span><span>Official train.csv · productivity_score</span></div></footer>
+  <script src="app.js"></script>
+  <script src="custom-analysis.js"></script>
+</body>
+</html>

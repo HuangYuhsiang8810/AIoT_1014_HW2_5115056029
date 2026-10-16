@@ -1,0 +1,18 @@
+HW2 Multiple Linear Regression Summary
+Data source: https://www.kaggle.com/competitions/student-performance-prediction-machine-learning-challenge/data?select=train.csv
+Data file: StudentsPerformance_train.csv
+Rows: 16000
+Target: productivity_score
+Excluded identifiers: id, student_id
+Raw predictor count: 16
+One-hot transformed feature count: 17
+SelectKBest selected feature count: 12
+Best holdout model: Selected Linear Regression (12 Features)
+Selected Linear MAE: 0.0025
+Selected Linear RMSE: 0.0029
+Selected Linear R2: 1.0000
+Selected Linear 5-fold CV RMSE: 0.0029 +/- 0.0000
+95% prediction interval half-width: 0.0047
+95% prediction interval holdout coverage: 94.31%
+Important: the supplied file is the competition training export and contains the official productivity_score target.
+Interpretation: holdout and cross-validation results estimate predictive performance; they do not establish causal effects.
